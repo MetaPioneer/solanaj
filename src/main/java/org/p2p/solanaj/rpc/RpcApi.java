@@ -41,7 +41,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getRecentBlockhash", params, RecentBlockhash.class).getValue().getBlockhash();
@@ -92,7 +96,10 @@ public class RpcApi {
 
         params.add(account.toString());
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getBalance", params, ValueLong.class).getValue();
@@ -256,7 +263,10 @@ public class RpcApi {
 
         params.add(dataLength);
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getMinimumBalanceForRentExemption", params, Long.class);
@@ -284,7 +294,10 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
         return client.call("getBlockHeight", params, Long.class);
     }
@@ -325,7 +338,11 @@ public class RpcApi {
         params.add(address.toString());
         params.add(lamports);
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("requestAirdrop", params, String.class);
@@ -348,7 +365,11 @@ public class RpcApi {
 
         params.add(blockhash);
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getFeeCalculatorForBlockhash", params, FeeCalculatorInfo.class);
@@ -366,7 +387,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getFees", params, FeesInfo.class);
@@ -380,7 +405,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getTransactionCount", params, Long.class);
@@ -392,13 +421,20 @@ public class RpcApi {
 
     public SimulatedTransaction simulateTransaction(String transaction, List<PublicKey> addresses) throws RpcException {
         SimulateTransactionConfig simulateTransactionConfig = new SimulateTransactionConfig(Encoding.base64);
-        simulateTransactionConfig.setAccounts(
-                Map.of(
-                        "encoding",
-                        Encoding.base64,
-                        "addresses",
-                        addresses.stream().map(PublicKey::toBase58).collect(Collectors.toList()))
-        );
+
+        HashMap<String, Object> map = new HashMap<>(1);
+        map.put("encoding", Encoding.base64);
+        map.put("addresses", addresses.stream().map(PublicKey::toBase58).collect(Collectors.toList()));
+
+//        simulateTransactionConfig.setAccounts(
+//                Map.of(
+//                        "encoding",
+//                        Encoding.base64,
+//                        "addresses",
+//                        addresses.stream().map(PublicKey::toBase58).collect(Collectors.toList()))
+//        );
+        simulateTransactionConfig.setAccounts(map);
+
         simulateTransactionConfig.setReplaceRecentBlockhash(true);
 
         List<Object> params = new ArrayList<>();
@@ -481,7 +517,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getEpochInfo", params, EpochInfo.class);
@@ -528,7 +568,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getInflationGovernor", params, InflationGovernor.class);
@@ -571,7 +615,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getSlot", params, Long.class);
@@ -585,7 +633,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return new PublicKey(client.call("getSlotLeader", params, String.class));
@@ -638,7 +690,11 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         return client.call("getSupply", params, Supply.class);
@@ -680,7 +736,11 @@ public class RpcApi {
         params.add(tokenAccount.toString());
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         Map<String, Object> rawResult = client.call("getTokenAccountBalance", params, Map.class);
@@ -697,7 +757,11 @@ public class RpcApi {
         params.add(tokenMint.toString());
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         Map<String, Object> rawResult =  client.call("getTokenSupply", params, Map.class);
@@ -714,7 +778,11 @@ public class RpcApi {
         params.add(tokenMint.toString());
 
         if (null != commitment) {
-            params.add(Map.of("commitment", commitment.getValue()));
+//            params.add(Map.of("commitment", commitment.getValue()));
+
+            HashMap<String, Object> map = new HashMap<>(1);
+            map.put("commitment", commitment.getValue());
+            params.add(map);
         }
 
         Map<String, Object> rawResult = client.call("getTokenLargestAccounts", params, Map.class);

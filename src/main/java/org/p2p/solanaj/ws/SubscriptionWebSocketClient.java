@@ -2,9 +2,7 @@ package org.p2p.solanaj.ws;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -85,7 +83,12 @@ public class SubscriptionWebSocketClient extends WebSocketClient {
     public void accountSubscribe(String key, NotificationEventListener listener) {
         List<Object> params = new ArrayList<>();
         params.add(key);
-        params.add(Map.of("encoding", "jsonParsed", "commitment", Commitment.PROCESSED.getValue()));
+//        params.add(Map.of("encoding", "jsonParsed", "commitment", Commitment.PROCESSED.getValue()));
+        Map<String, String> map = new HashMap<>(2);
+        map.put("encoding", "jsonParsed");
+        map.put("commitment", Commitment.PROCESSED.getValue());
+
+        params.add(map);
 
         RpcRequest rpcRequest = new RpcRequest("accountSubscribe", params);
 
@@ -109,8 +112,15 @@ public class SubscriptionWebSocketClient extends WebSocketClient {
 
     public void logsSubscribe(String mention, NotificationEventListener listener) {
         List<Object> params = new ArrayList<Object>();
-        params.add(Map.of("mentions", List.of(mention)));
-        params.add(Map.of("commitment", "finalized"));
+//        params.add(Map.of("mentions", List.of(mention)));
+//        params.add(Map.of("commitment", "finalized"));
+        HashMap<String, Object> map1 = new HashMap<>(1);
+        map1.put("mentions", new ArrayList<String>(Arrays.asList(mention)));
+        params.add(map1);
+
+        HashMap<String, Object> map2 = new HashMap<>(1);
+        map2.put("commitment", "finalized");
+        params.add(map2);
 
         RpcRequest rpcRequest = new RpcRequest("logsSubscribe", params);
 
@@ -122,8 +132,16 @@ public class SubscriptionWebSocketClient extends WebSocketClient {
 
     public void logsSubscribe(List<String> mentions, NotificationEventListener listener) {
         List<Object> params = new ArrayList<Object>();
-        params.add(Map.of("mentions", mentions));
-        params.add(Map.of("commitment", "finalized"));
+//        params.add(Map.of("mentions", mentions));
+//        params.add(Map.of("commitment", "finalized"));
+
+        HashMap<String, Object> map1 = new HashMap<>(1);
+        map1.put("mentions", mentions);
+        params.add(map1);
+
+        HashMap<String, Object> map2 = new HashMap<>(1);
+        map2.put("commitment", "finalized");
+        params.add(map2);
 
         RpcRequest rpcRequest = new RpcRequest("logsSubscribe", params);
 

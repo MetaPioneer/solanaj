@@ -36,7 +36,7 @@ public class TokenManager {
         transaction.addInstruction(
                 MemoProgram.writeUtf8(
                         owner.getPublicKey(),
-                        "Hello from SolanaJ"
+                        ""
                 )
         );
 
@@ -78,7 +78,7 @@ public class TokenManager {
         transaction.addInstruction(
                 MemoProgram.writeUtf8(
                         owner.getPublicKey(),
-                        "Hello from SolanaJ"
+                        ""
                 )
         );
 

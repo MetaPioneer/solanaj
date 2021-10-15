@@ -1,6 +1,7 @@
 package org.p2p.solanaj.core;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -79,16 +80,20 @@ public class PublicKey {
     public static PublicKey createProgramAddress(List<byte[]> seeds, PublicKey programId) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-        for (byte[] seed : seeds) {
-            if (seed.length > 32) {
-                throw new IllegalArgumentException("Max seed length exceeded");
+        try {
+            for (byte[] seed : seeds) {
+                if (seed.length > 32) {
+                    throw new IllegalArgumentException("Max seed length exceeded");
+                }
+
+                buffer.write(seed);
             }
 
-            buffer.writeBytes(seed);
+            buffer.write(programId.toByteArray());
+            buffer.write("ProgramDerivedAddress".getBytes());
+        }catch (IOException e) {
+            e.printStackTrace();
         }
-
-        buffer.writeBytes(programId.toByteArray());
-        buffer.writeBytes("ProgramDerivedAddress".getBytes());
 
         byte[] hash = Sha256Hash.hash(buffer.toByteArray());
 
