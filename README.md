@@ -11,7 +11,7 @@ This fork includes functionality for multiple Solana programs, including the Ser
 For SolanaJ implementations of popular Solana programs such as Serum, please visit: https://github.com/skynetcapital/solanaj-programs
 
 ## Requirements
-- Java 11+
+- Java 1.8+
 
 ## Dependencies
 - bitcoinj
@@ -26,7 +26,7 @@ For SolanaJ implementations of popular Solana programs such as Serum, please vis
     <dependency>
             <groupId>org.p2p</groupId>
             <artifactId>solanaj</artifactId>
-            <version>1.6-SNAPSHOT</version>
+            <version>1.7</version>
     </dependency>
     ```
 
