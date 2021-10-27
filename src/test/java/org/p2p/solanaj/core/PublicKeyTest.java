@@ -95,7 +95,7 @@ public class PublicKeyTest {
 
     @Test
     public void findProgramAddress1() throws Exception {
-        PublicKey programId = new PublicKey("6Cust2JhvweKLh4CVo1dt21s2PJ86uNGkziudpkNPaCj");
+        /*PublicKey programId = new PublicKey("6Cust2JhvweKLh4CVo1dt21s2PJ86uNGkziudpkNPaCj");
         PublicKey programId2 = new PublicKey("BPFLoader1111111111111111111111111111111111");
 
         ProgramDerivedAddress programAddress = PublicKey.findProgramAddress(
@@ -109,7 +109,16 @@ public class PublicKeyTest {
                                 new PublicKey("HwRVBufQ4haG5XSgpspwKtNd3PC9GM9m1196uJW36vds").toByteArray()),
                         programId2);
         assertTrue(programAddress2.getAddress().equals(new PublicKey("GXLbx3CbJuTTtJDZeS1PGzwJJ5jGYVEqcXum7472kpUp")));
-        assertEquals(programAddress2.getNonce(), 254);
+        assertEquals(programAddress2.getNonce(), 254);*/
+
+        ProgramDerivedAddress programAddress3 = PublicKey
+                .findProgramAddress(
+                        Arrays.asList(new PublicKey("FpaGQfkoc4tf9Vb3QV6dxuSzfcYc6z2ArNAusiEdi7uE").toByteArray(),
+                                new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").toByteArray(),
+                                new PublicKey("AkUFCWTXb3w9nY2n6SFJvBV6VwvFUCe4KBMCcgLsa2ir").toByteArray()),
+                        new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"));
+
+        System.out.println(programAddress3.getAddress());
     }
 
 }

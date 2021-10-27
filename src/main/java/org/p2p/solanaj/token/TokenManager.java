@@ -3,10 +3,13 @@ package org.p2p.solanaj.token;
 import org.p2p.solanaj.core.Account;
 import org.p2p.solanaj.core.PublicKey;
 import org.p2p.solanaj.core.Transaction;
+import org.p2p.solanaj.programs.AssociatedTokenProgram;
 import org.p2p.solanaj.programs.MemoProgram;
 import org.p2p.solanaj.programs.TokenProgram;
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.RpcException;
+
+import java.util.Arrays;
 
 /**
  * Manager class for calling {@link TokenProgram}-related APIs
@@ -79,6 +82,57 @@ public class TokenManager {
                 MemoProgram.writeUtf8(
                         owner.getPublicKey(),
                         ""
+                )
+        );
+
+        // Call sendTransaction
+        String result = null;
+        try {
+            result = client.getApi().sendTransaction(transaction, owner);
+        } catch (RpcException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public String transferCheckedToSolAddressFundRecipient(final Account owner, final PublicKey source, final PublicKey destination, final PublicKey tokenMint, long amount, byte decimals) {
+        // getTokenAccountsByOwner
+        PublicKey tokenAccount = null;
+
+        try {
+            tokenAccount = client.getApi().getTokenAccountsByOwner(destination, tokenMint);
+        } catch (RpcException e) {
+
+        }
+
+        final Transaction transaction = new Transaction();
+
+        if(null == tokenAccount){
+            tokenAccount = AssociatedTokenProgram.getAssociatedTokenAddress(destination, tokenMint);
+
+            if(null == tokenAccount){
+                return null;
+            }
+            transaction.addInstruction(
+                    AssociatedTokenProgram.create(
+                            owner.getPublicKey(),
+                            tokenMint,
+                            destination,
+                            tokenAccount
+                    )
+            );
+        }
+
+        // SPL token instruction
+        transaction.addInstruction(
+                TokenProgram.transferChecked(
+                        source,
+                        tokenAccount,
+                        amount,
+                        decimals,
+                        owner.getPublicKey(),
+                        tokenMint
                 )
         );
 
