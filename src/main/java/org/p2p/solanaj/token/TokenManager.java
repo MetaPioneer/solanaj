@@ -5,9 +5,11 @@ import org.p2p.solanaj.core.PublicKey;
 import org.p2p.solanaj.core.Transaction;
 import org.p2p.solanaj.programs.AssociatedTokenProgram;
 import org.p2p.solanaj.programs.MemoProgram;
+import org.p2p.solanaj.programs.SystemProgram;
 import org.p2p.solanaj.programs.TokenProgram;
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.RpcException;
+import org.p2p.solanaj.rpc.types.AccountInfo;
 
 import java.util.Arrays;
 
@@ -36,12 +38,12 @@ public class TokenManager {
         );
 
         // Memo
-        transaction.addInstruction(
+        /*transaction.addInstruction(
                 MemoProgram.writeUtf8(
                         owner.getPublicKey(),
                         ""
                 )
-        );
+        );*/
 
         // Call sendTransaction
         String result = null;
@@ -78,12 +80,12 @@ public class TokenManager {
         );
 
         // Memo
-        transaction.addInstruction(
+        /*transaction.addInstruction(
                 MemoProgram.writeUtf8(
                         owner.getPublicKey(),
                         ""
                 )
-        );
+        );*/
 
         // Call sendTransaction
         String result = null;
@@ -96,32 +98,28 @@ public class TokenManager {
         return result;
     }
 
-    public String transferCheckedToSolAddressFundRecipient(final Account owner, final PublicKey source, final PublicKey destination, final PublicKey tokenMint, long amount, byte decimals) {
+    public String transferCheckedToSolAddressFundRecipient(final Account owner, final PublicKey source, final PublicKey destination, final PublicKey tokenMint, long amount, byte decimals) throws RpcException {
         // getTokenAccountsByOwner
-        PublicKey tokenAccount = null;
-
-        try {
-            tokenAccount = client.getApi().getTokenAccountsByOwner(destination, tokenMint);
-        } catch (RpcException e) {
-
-        }
+        PublicKey tokenAccount = destination;
 
         final Transaction transaction = new Transaction();
-
-        if(null == tokenAccount){
+        //is spl token address
+        if (!isTokenAccount(destination)){
             tokenAccount = AssociatedTokenProgram.getAssociatedTokenAddress(destination, tokenMint);
 
-            if(null == tokenAccount){
-                return null;
+            boolean needsFunding = !isTokenAccount(tokenAccount);
+
+            if (needsFunding){
+                transaction.addInstruction(
+                        AssociatedTokenProgram.create(
+                                owner.getPublicKey(),
+                                tokenMint,
+                                destination,
+                                tokenAccount
+                        )
+                );
             }
-            transaction.addInstruction(
-                    AssociatedTokenProgram.create(
-                            owner.getPublicKey(),
-                            tokenMint,
-                            destination,
-                            tokenAccount
-                    )
-            );
+
         }
 
         // SPL token instruction
@@ -168,5 +166,21 @@ public class TokenManager {
         }
 
         return result;
+    }
+
+    public boolean isTokenAccount(PublicKey destination) throws RpcException {
+        boolean ret = false;
+
+        AccountInfo accountInfo = client.getApi().getAccountInfo(destination);
+        if (accountInfo == null || accountInfo.getValue() == null || SystemProgram.PROGRAM_ID.toBase58().equalsIgnoreCase(accountInfo.getValue().getOwner())){
+            ret = false;
+        }else if(TokenProgram.PROGRAM_ID.toBase58().equalsIgnoreCase(accountInfo.getValue().getOwner())){
+            ret = true;
+        }else{
+            throw new RpcException("Unsupported recipient address: "+destination.toString());
+        }
+
+        return ret;
+
     }
 }

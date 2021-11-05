@@ -1,9 +1,12 @@
 package org.p2p.solanaj.core;
 
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.Builder;
+import org.bitcoinj.core.Base58;
 import org.bitcoinj.crypto.*;
 import org.p2p.solanaj.utils.TweetNaclFast;
 import org.p2p.solanaj.utils.bip32.wallet.SolanaBip44;
@@ -22,6 +25,42 @@ public class Account {
 
     private Account(TweetNaclFast.Signature.KeyPair keyPair) {
         this.keyPair = keyPair;
+    }
+
+
+    /**
+     * this param has direct influence to the number of mnemonic seed words for correlation of entropy
+     * bit size and number of words see spec {@linkplain
+     * https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#Generating_the_mnemonic}
+     */
+    private static int entropySizeInByte = 256 / 8;
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+
+    /**
+     * generate a securely randomed salt of given size
+     *
+     * @param size
+     * @return
+     */
+    public static final byte[] genRandomBytes(int size) {
+        byte[] salt = new byte[size];
+        secureRandom.nextBytes(salt);
+        return salt;
+    }
+
+    public static Account generateAddress(){
+        // generate a random byte array
+        byte[] entropy = genRandomBytes(entropySizeInByte);
+        // generate the list of mnemonic seed words based on the random byte array
+        try {
+            List<String> mnemonicSeedWords = MnemonicCode.INSTANCE.toMnemonic(entropy);
+
+            return Account.fromBip39Mnemonic(mnemonicSeedWords, "");
+        } catch (MnemonicException.MnemonicLengthException e) {
+            e.printStackTrace();
+        }
+        return new Account();
     }
 
     @Deprecated

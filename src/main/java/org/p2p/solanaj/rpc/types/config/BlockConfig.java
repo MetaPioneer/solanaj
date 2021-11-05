@@ -5,11 +5,11 @@ import lombok.Setter;
 @Setter
 public class BlockConfig {
 
-    private String encoding = "json";
+    private String encoding = "jsonParsed";
 
     private String transactionDetails = "full";
 
-    private Boolean rewards = true;
+    private Boolean rewards = false;
 
     private String commitment;
 }

@@ -27,7 +27,7 @@ public class Block {
     private String previousBlockhash;
 
     @Json(name = "transactions")
-    private List<ConfirmedTransaction> transactions;
+    private List<BlockTransaction> transactions;
 
     @Json(name = "rewards")
     private List<Reward> rewards;

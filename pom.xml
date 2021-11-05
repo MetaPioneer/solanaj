@@ -4,7 +4,7 @@
     <groupId>org.p2p</groupId>
     <artifactId>solanaj</artifactId>
     <packaging>jar</packaging>
-    <version>1.7</version>
+    <version>1.8-SNAPSHOT</version>
     <name>solanaj</name>
 
     <build>
@@ -76,11 +76,13 @@
         </dependency>
     </dependencies>
 
+    <!-- 配置远程仓库发部地址 -->
     <distributionManagement>
         <repository>
-            <id>thirdparty</id>
-            <name>thirdparty</name>
-            <url>http://192.168.2.31:8081/nexus/content/repositories/thirdparty/</url>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://192.168.2.31:8081/nexus/content/repositories/snapshots/</url>
         </repository>
     </distributionManagement>
+
 </project>

@@ -24,5 +24,5 @@ public class ConfirmedBlock {
     private String previousBlockhash;
 
     @Json(name = "transactions")
-    private List<ConfirmedTransaction> transactions;
+    private List<BlockTransaction> transactions;
 }

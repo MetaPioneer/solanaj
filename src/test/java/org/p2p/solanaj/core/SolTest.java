@@ -1,5 +1,10 @@
 package org.p2p.solanaj.core;
 
+import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import jdk.nashorn.internal.parser.JSONParser;
 import lombok.Builder;
 import org.bitcoinj.core.Base58;
 import org.bitcoinj.crypto.MnemonicCode;
@@ -11,10 +16,14 @@ import org.p2p.solanaj.programs.SystemProgram;
 import org.p2p.solanaj.rpc.Cluster;
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.RpcException;
+import org.p2p.solanaj.rpc.types.Block;
+import org.p2p.solanaj.rpc.types.BlockTransaction;
+import org.p2p.solanaj.rpc.types.RpcResponse;
 import org.p2p.solanaj.token.TokenManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
@@ -42,29 +51,6 @@ public class SolTest {
     public static final String mnemonic = "stick illness arrow dizzy input sock wealth style gather ridge special silly";
 
 
-    /**
-     * this param has direct influence to the number of mnemonic seed words for correlation of entropy
-     * bit size and number of words see spec {@linkplain
-     * https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki#Generating_the_mnemonic}
-     */
-    @Builder.Default
-    private int entropySizeInByte = 256 / 8;
-
-    private static final SecureRandom secureRandom = new SecureRandom();
-
-
-    /**
-     * generate a securely randomed salt of given size
-     *
-     * @param size
-     * @return
-     */
-    public static final byte[] genRandomBytes(int size) {
-        byte[] salt = new byte[size];
-        secureRandom.nextBytes(salt);
-        return salt;
-    }
-
     @BeforeClass
     public static void setup() {
 
@@ -87,18 +73,9 @@ public class SolTest {
 
     @Test
     public void generateAddress(){
-        // generate a random byte array
-        byte[] entropy = genRandomBytes(entropySizeInByte);
-        // generate the list of mnemonic seed words based on the random byte array
-        try {
-            List<String> mnemonicSeedWords = MnemonicCode.INSTANCE.toMnemonic(entropy);
-
-            Account account = Account.fromBip39Mnemonic(mnemonicSeedWords, "");
-            LOGGER.info("publicKey:{}", account.getPublicKey().toBase58());
-            LOGGER.info("secretKey:{}", Base58.encode(account.getSecretKey()));
-        } catch (MnemonicException.MnemonicLengthException e) {
-            e.printStackTrace();
-        }
+        Account account = Account.generateAddress();
+        System.out.println(String.format("publicKey: %s", account.getPublicKey().toBase58()));
+        System.out.println(String.format("secretKey: %s", Base58.encode(account.getSecretKey())));
     }
 
     @Test
@@ -166,11 +143,38 @@ public class SolTest {
         }
     }
 
+    @Test
+    public void getBlockTest() {
+        try {
+            Block block = client.getApi().getBlock(91662238);
+
+            List<BlockTransaction> transactionList = block.getTransactions();
+            for (int i = 0; i < transactionList.size(); i++) {
+                if (i == 117) {
+                    BlockTransaction blockTransaction = transactionList.get(i);
+                    List<BlockTransaction.Instruction> instructionList = blockTransaction.getTransaction().getMessage().getInstructions();
+                    for (BlockTransaction.Instruction instruction : instructionList) {
+
+                        Object parsed = instruction.getParsed();
+
+
+                        System.out.println(parsed);
+                    }
+
+                }
+            }
+
+            System.out.println(block);
+        } catch (RpcException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Test
     public void transferCheckedTest() {
         final PublicKey source = usdcSource; // Private key's USDC token account
-        final PublicKey destination = new PublicKey("8uh2rH7orbcexx19zDcnWgxBV3Q84qQuSW9gD8XYMYnK");
+        final PublicKey destination = new PublicKey("BMbZAciJJKAveJ6TmioYJSA7c31ikJVLqL1XbPUDHG5J");
 
         /*
             amount = "0.0001" usdc
@@ -184,17 +188,24 @@ public class SolTest {
         // Create account from private key
         final Account owner = testAccount;
 
-        final String txId = tokenManager.transferCheckedToSolAddressFundRecipient(
-                owner,
-                source,
-                destination,
-                USDC_TOKEN_MINT,
-                tokenAmount,
-                decimals
-        );
-        System.out.println(txId);
-        // TODO - actually verify something
-        assertNotNull(txId);
+        try {
+            final String txId = tokenManager.transferCheckedToSolAddressFundRecipient(
+                    owner,
+                    source,
+                    destination,
+                    USDC_TOKEN_MINT,
+                    tokenAmount,
+                    decimals
+            );
+            System.out.println(txId);
+
+            // TODO - actually verify something
+            assertNotNull(txId);
+        } catch (RpcException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

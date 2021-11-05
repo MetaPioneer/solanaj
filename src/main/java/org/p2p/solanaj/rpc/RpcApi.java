@@ -105,15 +105,15 @@ public class RpcApi {
         return client.call("getBalance", params, ValueLong.class).getValue();
     }
 
-    public ConfirmedTransaction getConfirmedTransaction(String signature) throws RpcException {
+    public BlockTransaction getTransaction(String signature) throws RpcException {
         List<Object> params = new ArrayList<Object>();
 
         params.add(signature);
         // TODO jsonParsed, base58, base64
         // the default encoding is JSON
-        // params.add("json");
+         params.add("jsonParsed");
 
-        return client.call("getConfirmedTransaction", params, ConfirmedTransaction.class);
+        return client.call("getTransaction", params, BlockTransaction.class);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -491,14 +491,14 @@ public class RpcApi {
 
         params.add(slot);
 
+        BlockConfig blockConfig = new BlockConfig();
         if (null != optionalParams) {
-            BlockConfig blockConfig = new BlockConfig();
             if (optionalParams.containsKey("commitment")) {
                 Commitment commitment = (Commitment) optionalParams.get("commitment");
                 blockConfig.setCommitment(commitment.getValue());
             }
-            params.add(blockConfig);
         }
+        params.add(blockConfig);
 
         return client.call("getBlock", params, Block.class);
     }
@@ -725,6 +725,24 @@ public class RpcApi {
     @Deprecated
     public List<Double> getConfirmedBlocks(Integer start) throws RpcException {
         return this.getConfirmedBlocks(start, null);
+    }
+
+    /**
+     * Returns a list of confirmed blocks between two slots
+     * @param start start_slot, as u64 integer
+     * @param end end_slot, as u64 integer
+     */
+    public List<Double> getBlocks(Integer start, Integer end) throws RpcException {
+        List<Object> params;
+        params = (end == null ? Arrays.asList(start) : Arrays.asList(start, end));
+        return this.client.call("getBlocks", params, List.class);
+    }
+    /**
+     * Returns a list of confirmed blocks between two slots
+     * @param start start_slot, as u64 integer
+     */
+    public List<Double> getBlocks(Integer start) throws RpcException {
+        return this.getBlocks(start, null);
     }
 
     public TokenResultObjects.TokenAmountInfo getTokenAccountBalance(PublicKey tokenAccount) throws RpcException {

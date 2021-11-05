@@ -113,7 +113,7 @@ public class PublicKeyTest {
 
         ProgramDerivedAddress programAddress3 = PublicKey
                 .findProgramAddress(
-                        Arrays.asList(new PublicKey("FpaGQfkoc4tf9Vb3QV6dxuSzfcYc6z2ArNAusiEdi7uE").toByteArray(),
+                        Arrays.asList(new PublicKey("8L4bDDb87KtqWqZnzQwYb2i77GHw935qVCEziCGPCc9K").toByteArray(),
                                 new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").toByteArray(),
                                 new PublicKey("AkUFCWTXb3w9nY2n6SFJvBV6VwvFUCe4KBMCcgLsa2ir").toByteArray()),
                         new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"));

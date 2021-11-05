@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 public class MainnetTest extends AccountBasedTest {
 
-    private final RpcClient client = new RpcClient(Cluster.MAINNET);
+    private final RpcClient client = new RpcClient(Cluster.DEVNET);
     public final TokenManager tokenManager = new TokenManager(client);
 
     private static final PublicKey USDC_TOKEN_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
@@ -603,10 +603,15 @@ public class MainnetTest extends AccountBasedTest {
     }
 
     @Test
-    @Ignore
     public void getConfirmedTransactionTest() throws RpcException {
-        String txId = "46VcVPoecvVASnX9vHEZLA8JMS6BVXhvMMhqtGBcn9eg4bHehK6uA2icuTjwjWLZxwfxdT2z1CqYxCHHvjorvWDi";
-        ConfirmedTransaction confirmedTransaction = client.getApi().getConfirmedTransaction(txId);
+        String txId = "2qZgaN4YK9xkKsHWX9LicFZvdn8a34XHyathWSDipMZKabn1JpsaMZ3ZeD2Swf6LqHFcUNbJmwBVLz7bgTrzXtJU";
+        BlockTransaction confirmedTransaction = client.getApi().getTransaction(txId);
+
+        List<BlockTransaction.Instruction> instructionList = confirmedTransaction.getTransaction().getMessage().getInstructions();
+        for (BlockTransaction.Instruction instruction : instructionList) {
+            Object info = instruction.getParsed();
+            System.out.println(info.toString());
+        }
 
         if (confirmedTransaction != null) {
             LOGGER.info(String.format("Tx: %s", confirmedTransaction));
@@ -623,13 +628,14 @@ public class MainnetTest extends AccountBasedTest {
     @Test
     public void getBlockTest() throws RpcException {
         Block block = this.client.getApi().getBlock(74953539);
+        System.out.println(block);
         assertEquals("74953539", block.getBlockHeight());
     }
 
     @Test
     public void getConfirmedBlocksTest() throws RpcException {
-        List<Double> blocks = this.client.getApi().getConfirmedBlocks(5);
-        List<Double> singleBlock = this.client.getApi().getConfirmedBlocks(5, 5);
+        List<Double> blocks = this.client.getApi().getConfirmedBlocks(91662119);
+        List<Double> singleBlock = this.client.getApi().getConfirmedBlocks(91662119, 91662119);
         assertEquals(Double.valueOf(5), Double.valueOf(blocks.get(0)));
         assertEquals(Double.valueOf(5), Double.valueOf(singleBlock.get(0)));
     }
